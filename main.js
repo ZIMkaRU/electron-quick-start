@@ -9,20 +9,39 @@ function createWindow () {
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
-    }
+    },
+    show: false
   })
 
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
+
+  mainWindow.on('error', (e) => {
+    console.error('[mainWindow-error]:', e)
+  })
+  mainWindow.once('show', () => {
+    console.log('[show-event]')
+  })
+  mainWindow.once('ready-to-show', () => {
+    console.log('[ready-to-show]')
+
+    setTimeout(() => {
+      console.log('[show-call]')
+
+      mainWindow.show()
+    }, 10000)
+  })
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  console.log('[createWindow-call]')
+
   createWindow()
   
   app.on('activate', function () {
